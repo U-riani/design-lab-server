@@ -9,13 +9,13 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 
 // Import route handlers
-const adminRoutes = require("../routes/adminRoutes"); // Admin routes
-const newsRoutes = require("../routes/newsRoutes"); // News routes
-const aboutUsRoutes = require("../routes/aboutUsRoutes"); // AboutUs routes
-const visitRoutes = require("../routes/visitRoutes");
-const heroRoutes = require("../routes/heroRoutes");
-const partnersRoutes = require("../routes/partnersRoutes");
-const designersRoutes = require("../routes/designersRoutes");
+const adminRoutes = require("./routes/adminRoutes"); // Admin routes
+const newsRoutes = require("./routes/newsRoutes"); // News routes
+const aboutUsRoutes = require("./routes/aboutUsRoutes"); // AboutUs routes
+const visitRoutes = require("./routes/visitRoutes");
+const heroRoutes = require("./routes/heroRoutes");
+const partnersRoutes = require("./routes/partnersRoutes");
+const designersRoutes = require("./routes/designersRoutes");
 
 const allowedOrigins = [
   "http://localhost:3000",
