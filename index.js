@@ -28,6 +28,7 @@ const allowedOrigins = [
   "design-lab.ge",
   "http://www.design-lab.ge",
   "https://www.design-lab.ge",
+  "https://design-lab.ge/"
 ];
 
 //middlewares
