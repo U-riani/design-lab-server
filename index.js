@@ -18,23 +18,33 @@ const partnersRoutes = require("./routes/partnersRoutes");
 const designersRoutes = require("./routes/designersRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
+
 const allowedOrigins = [
+  "http://localhost:3000",
+  "https://design-lab1.netlify.app",
+  "http://design-lab1.netlify.app",
   "https://design-lab.ge",
+  "http://design-lab.ge",
+  "www.design-lab.ge",
+  "design-lab.ge",
+  "http://www.design-lab.ge",
   "https://www.design-lab.ge",
-  "http://localhost:3000"
+  "https://www.design-lab.ge/"
 ];
 
+//middlewares
 app.use(
   cors({
     origin: function (origin, callback) {
+      // Allow requests with no origin (e.g., mobile apps or Postman)
       if (!origin) return callback(null, true);
-
       if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
       }
-
-      return callback(new Error("Not allowed by CORS"));
     },
+    methods: "GET,POST,PATCH,DELETE",
     credentials: true,
   })
 );
@@ -51,6 +61,7 @@ mongoose
   .connect(mongoURI)
   .then(() => console.log("MongoDb connected"))
   .catch((err) => console.log("Error connecting to MongoDB:", err));
+
 
 // Routes
 app.use("/admin", adminRoutes); // Admin routes
