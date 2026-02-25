@@ -35,19 +35,15 @@ const allowedOrigins = [
 //middlewares
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., mobile apps or Postman)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: "GET,POST,PATCH,DELETE",
+    origin: true,
     credentials: true,
   })
 );
+
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
