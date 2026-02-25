@@ -20,29 +20,22 @@ const paymentRoutes = require("./routes/paymentRoutes");
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://design-lab1.netlify.app",
-  "http://design-lab1.netlify.app",
   "https://design-lab.ge",
-  "http://design-lab.ge",
-  "www.design-lab.ge",
-  "design-lab.ge",
-  "http://www.design-lab.ge",
   "https://www.design-lab.ge",
+  "https://design-lab1.netlify.app",
 ];
 
-//middlewares
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (e.g., mobile apps or Postman)
       if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+
+      if (allowedOrigins.includes(origin) || origin.endsWith(".netlify.app")) {
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
-    methods: "GET,POST,PATCH,DELETE",
     credentials: true,
   }),
 );
