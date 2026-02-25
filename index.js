@@ -19,10 +19,9 @@ const designersRoutes = require("./routes/designersRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
 const allowedOrigins = [
-  "http://localhost:3000",
   "https://design-lab.ge",
   "https://www.design-lab.ge",
-  "https://design-lab1.netlify.app",
+  "http://localhost:3000"
 ];
 
 app.use(
@@ -30,14 +29,14 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin) || origin.endsWith(".netlify.app")) {
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
