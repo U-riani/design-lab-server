@@ -4,98 +4,80 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 
 const app = express();
 
-/* ================================
-   CORS CONFIG (clean + dynamic)
-================================ */
+// Import route handlers
+const adminRoutes = require("./routes/adminRoutes"); // Admin routes
+const newsRoutes = require("./routes/newsRoutes"); // News routes
+const aboutUsRoutes = require("./routes/aboutUsRoutes"); // AboutUs routes
+const visitRoutes = require("./routes/visitRoutes");
+const heroRoutes = require("./routes/heroRoutes");
+const partnersRoutes = require("./routes/partnersRoutes");
+const designersRoutes = require("./routes/designersRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const allowedOrigins = [
   "https://design-lab.ge",
   "https://www.design-lab.ge",
-  "http://localhost:3000",
+  "http://localhost:3000"
 ];
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow tools like Postman or server-to-server
+    origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
-        return callback(null, origin); // reflect exact origin
+        return callback(null, true);
       }
 
       return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-// Handle preflight explicitly
-app.options("*", cors());
-
-/* ================================
-   MIDDLEWARES
-================================ */
-
-app.use(helmet());
-app.use(morgan("combined"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 
-/* ================================
-   DATABASE
-================================ */
+app.use(helmet()); // Secure app by setting HTTP headers
+app.use(morgan("combined")); // Log requests
 
+const mongoURI =
+  "mongodb+srv://sandropapiashvili97:Microlab1@designlab.j9xlp.mongodb.net/?retryWrites=true&w=majority&appName=designlab";
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .connect(mongoURI)
+  .then(() => console.log("MongoDb connected"))
+  .catch((err) => console.log("Error connecting to MongoDB:", err));
 
-/* ================================
-   ROUTES
-================================ */
+// Routes
+app.use("/admin", adminRoutes); // Admin routes
+app.use("/api", newsRoutes); // News routes
+app.use("/api/aboutUs", aboutUsRoutes); // News routes
+app.use("/api/visit", visitRoutes);
+app.use("/api/heros", heroRoutes);
+app.use("/api/partners", partnersRoutes);
+app.use("/api/designers", designersRoutes);
+app.use("/api/payment", paymentRoutes);
 
-app.use("/admin", require("./routes/adminRoutes"));
-app.use("/api", require("./routes/newsRoutes"));
-app.use("/api/aboutUs", require("./routes/aboutUsRoutes"));
-app.use("/api/visit", require("./routes/visitRoutes"));
-app.use("/api/heros", require("./routes/heroRoutes"));
-app.use("/api/partners", require("./routes/partnersRoutes"));
-app.use("/api/designers", require("./routes/designersRoutes"));
-app.use("/api/payment", require("./routes/paymentRoutes"));
-
-/* ================================
-   HEALTH CHECK
-================================ */
-
+// Default route to check server status
 app.get("/", (req, res) => {
   res.json({ message: "Server is running" });
 });
 
-/* ================================
-   ERROR HANDLER
-================================ */
-
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: err.message || "Internal Server Error" });
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
-/* ================================
-   START SERVER
-================================ */
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(5000, () => {
+  console.log("Server is running on port 5000");
 });
 
+// Graceful shutdown (optional, mainly for local use)
 process.on("SIGTERM", () => {
   console.log("Server terminating");
 });
