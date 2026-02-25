@@ -16,6 +16,7 @@ const visitRoutes = require("./routes/visitRoutes");
 const heroRoutes = require("./routes/heroRoutes");
 const partnersRoutes = require("./routes/partnersRoutes");
 const designersRoutes = require("./routes/designersRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const allowedOrigins = [
   "http://localhost:3000",
@@ -27,7 +28,6 @@ const allowedOrigins = [
   "design-lab.ge",
   "http://www.design-lab.ge",
   "https://www.design-lab.ge",
-  "https://www.design-lab.ge/"
 ];
 
 //middlewares
@@ -44,7 +44,7 @@ app.use(
     },
     methods: "GET,POST,PATCH,DELETE",
     credentials: true,
-  })
+  }),
 );
 
 app.use(express.json());
@@ -60,7 +60,6 @@ mongoose
   .then(() => console.log("MongoDb connected"))
   .catch((err) => console.log("Error connecting to MongoDB:", err));
 
-
 // Routes
 app.use("/admin", adminRoutes); // Admin routes
 app.use("/api", newsRoutes); // News routes
@@ -69,6 +68,7 @@ app.use("/api/visit", visitRoutes);
 app.use("/api/heros", heroRoutes);
 app.use("/api/partners", partnersRoutes);
 app.use("/api/designers", designersRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Default route to check server status
 app.get("/", (req, res) => {
